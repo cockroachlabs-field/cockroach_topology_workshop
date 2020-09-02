@@ -1,0 +1,111 @@
+version: "3.5"
+
+services:
+  crdb-0:
+    container_name: crdb-0
+    hostname: crdb-0
+    image: holtrdan/cockroachdbextra:1.1
+    command: start --logtostderr --insecure --locality=region=eu,datacenter=eu-west-2,az=eu-west-2a
+
+  crdb-0a:
+    container_name: crdb-0a
+    hostname: crdb-0a
+    image: holtrdan/cockroachdbextra:1.1
+    command: start --logtostderr --insecure --locality=region=eu,datacenter=eu-west-2,az=eu-west-2b --join=crdb-0
+    depends_on:
+      - crdb-0
+
+  crdb-0b:
+    container_name: crdb-0b
+    hostname: crdb-0b
+    image: holtrdan/cockroachdbextra:1.1
+    command: start --logtostderr --insecure --locality=region=eu,datacenter=eu-west-2,az=eu-west-2c --join=crdb-0
+    depends_on:
+      - crdb-0
+
+  crdb-1:
+    container_name: crdb-1
+    hostname: crdb-1
+    image: holtrdan/cockroachdbextra:1.1
+    command: start --logtostderr --insecure --locality=region=us,datacenter=us-east-1,az=us-east-1a --join=crdb-0
+    depends_on:
+      - crdb-0
+
+  crdb-1a:
+    container_name: crdb-1a
+    hostname: crdb-1a
+    image: holtrdan/cockroachdbextra:1.1
+    command: start --logtostderr --insecure --locality=region=us,datacenter=us-east-1,az=us-east-1b --join=crdb-0
+    depends_on:
+      - crdb-0
+
+  crdb-1b:
+    container_name: crdb-1b
+    hostname: crdb-1b
+    image: holtrdan/cockroachdbextra:1.1
+    command: start --logtostderr --insecure --locality=region=us,datacenter=us-east-1,az=us-east-1c --join=crdb-0
+    depends_on:
+      - crdb-0
+
+  crdb-2:
+    container_name: crdb-2
+    hostname: crdb-2
+    image: holtrdan/cockroachdbextra:1.1
+    command: start --logtostderr --insecure --locality=region=apac,datacenter=ap-southeast-1,az=ap-southeast-1a --join=crdb-0
+    depends_on:
+      - crdb-0
+
+  crdb-2a:
+    container_name: crdb-2a
+    hostname: crdb-2a
+    image: holtrdan/cockroachdbextra:1.1
+    command: start --logtostderr --insecure --locality=region=apac,datacenter=ap-southeast-1,az=ap-southeast-1b --join=crdb-0
+    depends_on:
+      - crdb-0
+
+  crdb-2b:
+    container_name: crdb-2b
+    hostname: crdb-2b
+    image: holtrdan/cockroachdbextra:1.1
+    command: start --logtostderr --insecure --locality=region=apac,datacenter=ap-southeast-1,az=ap-southeast-1c --join=crdb-0
+    depends_on:
+      - crdb-0
+
+  lb_eu:
+    container_name: lb_eu
+    hostname: lb_eu
+    build: haproxy_eu
+    ports:
+      - "5432:5432"
+      - "8080:8080"
+      - "8081:8081"
+    links:
+      - crdb-0
+      - crdb-0a
+      - crdb-0b
+
+  lb_us:
+    container_name: lb_us
+    hostname: lb_us
+    build: haproxy_us
+    ports:
+      - "5433:5432"
+      - "8090:8080"
+      - "8082:8081"
+    links:
+      - crdb-1
+      - crdb-1a
+      - crdb-1b
+
+  lb_apac:
+    container_name: lb_apac
+    hostname: lb_apac
+    build: haproxy_apac
+    ports:
+      - "5434:5432"
+      - "8070:8080"
+      - "8083:8081"
+    links:
+      - crdb-2
+      - crdb-2a
+      - crdb-2b

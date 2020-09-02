@@ -1,0 +1,14 @@
+Writes per second
+
+10 - 15 Million Queries per second
+couple of hundred of thousanda qps in postrges - Read Commited
+
+5 TB - Unreplicated data
+120 GB largest tables
+
+Single Region Multi AZ in AWS
+
+c5.9xlarge(36vcpu/72GB RAM) and m5.8xlarge(32vcpu/128GB RAM)
+ 
+Disk Local SSD / EBS
+
