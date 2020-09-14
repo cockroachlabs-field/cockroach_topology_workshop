@@ -64,3 +64,7 @@ docker-compose stop crdb-2
 docker-compose stop crdb-2a
 docker-compose stop crdb-2b
 ```
+
+## Test data locality
+
+To do a demonstration of pinning data to certain cluster nodes, see [this guide](DataPinning.md).
